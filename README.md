@@ -752,7 +752,6 @@ Ce projet est sous licence **MIT License**. Voir [LICENSE](LICENSE) pour plus de
 
 <div align="center">
 
-**Développé avec ❤️ par la communauté**
 
 **Prêt à transformer votre workflow ?**
 
