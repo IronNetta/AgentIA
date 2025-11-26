@@ -1,0 +1,23 @@
+#!/bin/bash
+# Agent CLI Launcher
+
+# Find Java
+if command -v java &> /dev/null; then
+    JAVA_CMD="java"
+elif [ -f "/app/extra/jbr/bin/java" ]; then
+    JAVA_CMD="/app/extra/jbr/bin/java"
+else
+    echo "❌ Java n'est pas trouvé. Installez Java 17+ ou définissez JAVA_HOME"
+    exit 1
+fi
+
+# Check if JAR exists
+JAR_PATH="$HOME/.agentcli/agentcli.jar"
+if [ ! -f "$JAR_PATH" ]; then
+    echo "❌ Agent CLI n'est pas installé."
+    echo "Exécutez: ./install.sh"
+    exit 1
+fi
+
+# Run Agent CLI in current directory
+$JAVA_CMD -jar "$JAR_PATH"

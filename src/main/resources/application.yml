@@ -1,0 +1,17 @@
+# Configuration LLM - Choisissez votre provider
+llm:
+  provider: OLLAMA_LOCAL  # Options: OLLAMA_LOCAL, OLLAMA_CLOUD, LLM_STUDIO, OPENAI, CUSTOM
+  endpoint: http://localhost:11434
+  model: qwen2.5-coder:7b
+  # api-key: # Décommentez si nécessaire
+  timeout: 120
+  max-retries: 3
+
+spring:
+  main:
+    banner-mode: off
+    web-application-type: none
+
+logging:
+  level:
+    root: ERROR

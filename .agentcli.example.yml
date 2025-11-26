@@ -1,0 +1,54 @@
+# Agent CLI Configuration Example
+# Copy this file to .agentcli.yml and customize for your project
+
+# Project identification
+projectName: "My Project"
+projectType: "auto"  # Options: auto, java, python, node, typescript, go, rust, csharp, php, ruby
+
+# Paths to ignore during indexing
+ignorePaths:
+  - ".git"
+  - ".svn"
+  - "node_modules"
+  - "target"
+  - "build"
+  - "dist"
+  - "out"
+  - ".idea"
+  - ".vscode"
+  - "__pycache__"
+  - "*.class"
+  - "*.pyc"
+  - "*.o"
+  - "*.so"
+  - ".DS_Store"
+
+# Specific paths to include (optional, empty = all)
+includePaths:
+  - "src"
+  - "lib"
+  - "app"
+
+# Maximum file size to analyze (in bytes)
+maxFileSize: 1000000  # 1MB
+
+# Custom command aliases (shortcuts)
+customCommands:
+  "@build": "@execute build"
+  "@test": "@execute test"
+  "@run": "@execute run"
+  "@deploy": "@execute deploy"
+
+# Tool-specific settings
+toolSettings:
+  search:
+    maxResults: 20
+    caseSensitive: false
+  tree:
+    defaultDepth: 3
+    maxDepth: 10
+  analyze:
+    includeMetrics: true
+    detailedReport: true
+  execute:
+    timeout: 300  # seconds

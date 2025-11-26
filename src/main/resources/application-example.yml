@@ -1,0 +1,115 @@
+# ═══════════════════════════════════════════════════════════════
+# Configuration Agent CLI - Exemples de configuration LLM
+# ═══════════════════════════════════════════════════════════════
+
+# ───────────────────────────────────────────────────────────────
+# Option 1: Ollama Local (par défaut)
+# ───────────────────────────────────────────────────────────────
+llm:
+  provider: OLLAMA_LOCAL
+  endpoint: http://localhost:11434
+  model: qwen2.5-coder:7b
+  # api-key: # Pas nécessaire en local
+  timeout: 120
+  max-retries: 3
+
+# Modèles recommandés pour Ollama:
+# - qwen2.5-coder:7b (recommandé - bon équilibre)
+# - deepseek-coder:6.7b (rapide)
+# - codellama:13b (précis mais lent)
+# - deepseek-coder:1.3b (très rapide, pour tests)
+
+# ───────────────────────────────────────────────────────────────
+# Option 2: Ollama Cloud (Official)
+# ───────────────────────────────────────────────────────────────
+# Documentation: https://docs.ollama.com/cloud
+# Créez votre clé API sur: https://ollama.com/settings/keys
+#
+# llm:
+#   provider: OLLAMA_CLOUD
+#   endpoint: https://ollama.com  # Endpoint officiel
+#   api-key: votre-cle-api-ici
+#   model: llama3.1:latest  # ou autre modèle disponible
+#   timeout: 180
+
+# ───────────────────────────────────────────────────────────────
+# Option 3: LLM Studio (local)
+# ───────────────────────────────────────────────────────────────
+# llm:
+#   provider: LLM_STUDIO
+#   endpoint: http://localhost:1234
+#   model: votre-modele-llm-studio
+#   # api-key: # Généralement pas nécessaire en local
+#   timeout: 120
+
+# LLM Studio est compatible OpenAI API
+# Téléchargez depuis: https://lmstudio.ai/
+
+# ───────────────────────────────────────────────────────────────
+# Option 4: OpenAI (cloud)
+# ───────────────────────────────────────────────────────────────
+# llm:
+#   provider: OPENAI
+#   endpoint: https://api.openai.com/v1
+#   api-key: sk-votre-cle-openai
+#   model: gpt-4
+#   timeout: 60
+
+# Modèles OpenAI:
+# - gpt-4 (meilleur qualité)
+# - gpt-3.5-turbo (rapide et économique)
+# - gpt-4-turbo (bon équilibre)
+
+# ───────────────────────────────────────────────────────────────
+# Option 5: Custom/Autre service
+# ───────────────────────────────────────────────────────────────
+# llm:
+#   provider: CUSTOM
+#   endpoint: http://votre-service:port
+#   api-key: votre-cle-si-necessaire
+#   model: votre-modele
+#   timeout: 120
+
+# ═══════════════════════════════════════════════════════════════
+# Configuration Spring Boot
+# ═══════════════════════════════════════════════════════════════
+spring:
+  application:
+    name: agent-cli
+  main:
+    banner-mode: off
+    web-application-type: none
+
+# ═══════════════════════════════════════════════════════════════
+# Logging
+# ═══════════════════════════════════════════════════════════════
+logging:
+  level:
+    org.seba.agentcli: INFO
+    org.springframework: WARN
+
+# Pour debug:
+# logging:
+#   level:
+#     org.seba.agentcli: DEBUG
+
+# ═══════════════════════════════════════════════════════════════
+# Notes d'utilisation
+# ═══════════════════════════════════════════════════════════════
+#
+# 1. Copiez ce fichier vers application.yml
+# 2. Décommentez la configuration que vous voulez utiliser
+# 3. Configurez les paramètres selon votre setup
+# 4. Relancez Agent CLI
+#
+# Pour changer de provider:
+# - Modifiez juste le bloc 'llm:'
+# - Redémarrez l'application
+# - Aucun code à changer !
+#
+# Test de connexion:
+# - Lancez agentcli
+# - Tapez une question simple
+# - Si erreur, vérifiez que le service LLM est accessible
+#
+# ═══════════════════════════════════════════════════════════════
