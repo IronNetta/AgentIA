@@ -763,5 +763,3 @@ cd votre-projet && agentcli
 ⭐ **N'oubliez pas de star le projet si vous l'aimez !** ⭐
 
 </div>
-#   A g e n t I A  
- 
