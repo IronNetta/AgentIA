@@ -1,0 +1,128 @@
+# Security Configuration for Agent CLI
+# This file controls security settings and access policies
+
+security:
+  # Path validation settings
+  pathValidation:
+    enabled: true
+
+    # Forbidden directories and files that should never be accessed
+    forbiddenPaths:
+      - ".git"
+      - ".env"
+      - ".ssh"
+      - "id_rsa"
+      - "id_dsa"
+      - "credentials"
+      - "secrets"
+      - "private_key"
+      - "*.pem"
+      - "*.key"
+      - ".aws"
+      - ".azure"
+      - ".kube"
+
+    # Additional patterns to block
+    suspiciousPatterns:
+      - "../../../"
+      - "..\\..\\..\"
+      - "%00"
+      - "<script>"
+
+    # Require files to be within project directory
+    requireProjectScope: true
+
+  # Rate limiting settings
+  rateLimit:
+    enabled: true
+
+    # Maximum file operations per second
+    maxOperationsPerSecond: 10
+
+    # Maximum file operations per minute
+    maxOperationsPerMinute: 100
+
+    # Maximum git operations per minute
+    maxGitOperationsPerMinute: 50
+
+    # Maximum search operations per minute
+    maxSearchOperationsPerMinute: 30
+
+  # Audit logging settings
+  audit:
+    enabled: true
+
+    # Log file location (relative to project root)
+    logFile: ".agentcli/audit.log"
+
+    # Log all file operations
+    logFileOperations: true
+
+    # Log all git operations
+    logGitOperations: true
+
+    # Log search operations
+    logSearchOperations: true
+
+    # Maximum log file size in MB (0 = unlimited)
+    maxLogSizeMB: 10
+
+    # Rotate logs when max size is reached
+    rotateLogsOnMaxSize: true
+
+  # Security event logging
+  securityLogging:
+    enabled: true
+
+    # Log file location
+    logFile: ".agentcli/security.log"
+
+    # Log to console as well
+    logToConsole: true
+
+    # Log level (INFO, WARN, ERROR)
+    logLevel: "WARN"
+
+  # Monitoring and alerts
+  monitoring:
+    enabled: true
+
+    # Alert threshold for rate limit violations per hour
+    rateLimitViolationThreshold: 10
+
+    # Alert threshold for path traversal attempts per hour
+    pathTraversalThreshold: 5
+
+    # Alert threshold for forbidden path access per hour
+    forbiddenAccessThreshold: 3
+
+    # Send alerts to console
+    alertToConsole: true
+
+    # Alert cooldown in minutes (prevent alert spam)
+    alertCooldownMinutes: 15
+
+  # File size limits
+  fileLimits:
+    # Maximum file size to read (in MB)
+    maxReadSizeMB: 10
+
+    # Maximum file size to write (in MB)
+    maxWriteSizeMB: 10
+
+    # Warn on files larger than this (in MB)
+    warnSizeMB: 5
+
+  # Backup settings
+  backup:
+    # Enable automatic backups before modifications
+    enabled: true
+
+    # Backup directory
+    directory: ".agentcli/backups"
+
+    # Maximum number of backups to keep per file
+    maxBackupsPerFile: 5
+
+    # Automatically clean old backups
+    autoCleanup: true

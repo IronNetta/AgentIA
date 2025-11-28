@@ -3,6 +3,7 @@ package org.seba.agentcli.files;
 import org.seba.agentcli.io.AnsiColors;
 import org.seba.agentcli.io.BoxDrawer;
 import org.seba.agentcli.io.ConsoleReader;
+import org.seba.agentcli.security.PathValidator;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,23 +26,32 @@ public class FileWriterService {
     private final InteractiveEditor interactiveEditor;
     private final CodeValidator codeValidator;
     private final TestRunner testRunner;
+    private final PathValidator pathValidator;
 
     public FileWriterService(BackupManager backupManager,
                            FileReaderService fileReaderService,
                            InteractiveEditor interactiveEditor,
                            CodeValidator codeValidator,
-                           TestRunner testRunner) {
+                           TestRunner testRunner,
+                           PathValidator pathValidator) {
         this.backupManager = backupManager;
         this.fileReaderService = fileReaderService;
         this.interactiveEditor = interactiveEditor;
         this.codeValidator = codeValidator;
         this.testRunner = testRunner;
+        this.pathValidator = pathValidator;
     }
 
     /**
      * Écrit du contenu dans un fichier (crée ou écrase)
      */
     public WriteResult writeFile(String filePath, String content, boolean withConfirmation, ConsoleReader reader) throws IOException {
+        // Security: Validate path before writing
+        PathValidator.ValidationResult pathValidation = pathValidator.validatePath(filePath);
+        if (!pathValidation.isValid()) {
+            throw new SecurityException(pathValidation.getErrorMessage());
+        }
+
         Path path = Paths.get(filePath).toAbsolutePath().normalize();
         boolean fileExists = Files.exists(path);
         String fileName = path.getFileName().toString();

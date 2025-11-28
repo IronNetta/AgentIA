@@ -180,8 +180,9 @@ public class GitTool extends AbstractTool {
      */
     private String showDiff(String file) {
         try {
-            String command = file.isEmpty() ? "git diff" : "git diff " + file;
-            String diff = executeGitCommand(command);
+            String diff = file.isEmpty() ?
+                executeGitCommand("diff") :
+                executeGitCommand("diff", file);
 
             if (diff.trim().isEmpty()) {
                 return formatSuccess("No changes to show");
@@ -213,8 +214,7 @@ public class GitTool extends AbstractTool {
                 }
             }
 
-            String command = String.format("git log --oneline --decorate --graph -n %d", limit);
-            String log = executeGitCommand(command);
+            String log = executeGitCommand("log", "--oneline", "--decorate", "--graph", "-n", String.valueOf(limit));
 
             StringBuilder output = new StringBuilder();
             output.append(BoxDrawer.drawSeparator("COMMIT HISTORY (last " + limit + ")", 70, AnsiColors.CYAN));
@@ -237,7 +237,7 @@ public class GitTool extends AbstractTool {
      */
     private String showBranches() {
         try {
-            String branches = executeGitCommand("git branch -a");
+            String branches = executeGitCommand("branch", "-a");
 
             StringBuilder output = new StringBuilder();
             output.append(BoxDrawer.drawSeparator("BRANCHES", 70, AnsiColors.CYAN));
@@ -266,7 +266,7 @@ public class GitTool extends AbstractTool {
      */
     private String showStagedChanges() {
         try {
-            String diff = executeGitCommand("git diff --cached");
+            String diff = executeGitCommand("diff", "--cached");
 
             if (diff.trim().isEmpty()) {
                 return formatSuccess("No staged changes");
@@ -289,7 +289,7 @@ public class GitTool extends AbstractTool {
      */
     private String showUnstagedChanges() {
         try {
-            String diff = executeGitCommand("git diff");
+            String diff = executeGitCommand("diff");
 
             if (diff.trim().isEmpty()) {
                 return formatSuccess("No unstaged changes");
@@ -312,7 +312,7 @@ public class GitTool extends AbstractTool {
      */
     private String showTrackedFiles() {
         try {
-            String files = executeGitCommand("git ls-files");
+            String files = executeGitCommand("ls-files");
             String[] fileList = files.split("\n");
 
             StringBuilder output = new StringBuilder();
@@ -344,7 +344,7 @@ public class GitTool extends AbstractTool {
                 return formatError("File not found: " + file);
             }
 
-            String blame = executeGitCommand("git blame " + file);
+            String blame = executeGitCommand("blame", file);
 
             StringBuilder output = new StringBuilder();
             output.append(BoxDrawer.drawSeparator("GIT BLAME: " + file, 70, AnsiColors.CYAN));
@@ -366,7 +366,7 @@ public class GitTool extends AbstractTool {
 
     private String getCurrentBranch() {
         try {
-            return executeGitCommand("git rev-parse --abbrev-ref HEAD").trim();
+            return executeGitCommand("rev-parse", "--abbrev-ref", "HEAD").trim();
         } catch (Exception e) {
             return "unknown";
         }
@@ -374,9 +374,9 @@ public class GitTool extends AbstractTool {
 
     private String getTrackingInfo() {
         try {
-            String upstream = executeGitCommand("git rev-parse --abbrev-ref @{upstream}").trim();
-            String ahead = executeGitCommand("git rev-list --count @{upstream}..HEAD").trim();
-            String behind = executeGitCommand("git rev-list --count HEAD..@{upstream}").trim();
+            String upstream = executeGitCommand("rev-parse", "--abbrev-ref", "@{upstream}").trim();
+            String ahead = executeGitCommand("rev-list", "--count", "@{upstream}..HEAD").trim();
+            String behind = executeGitCommand("rev-list", "--count", "HEAD..@{upstream}").trim();
 
             List<String> info = new ArrayList<>();
             if (!ahead.equals("0")) {
@@ -397,7 +397,7 @@ public class GitTool extends AbstractTool {
     }
 
     private GitStatus getGitStatus() throws Exception {
-        String status = executeGitCommand("git status --porcelain");
+        String status = executeGitCommand("status", "--porcelain");
         GitStatus result = new GitStatus();
 
         for (String line : status.split("\n")) {
@@ -454,8 +454,24 @@ public class GitTool extends AbstractTool {
         return line;
     }
 
-    private String executeGitCommand(String command) throws Exception {
-        ProcessBuilder pb = new ProcessBuilder("sh", "-c", command);
+    /**
+     * Executes a git command safely using parameterized arguments
+     * to prevent command injection vulnerabilities.
+     *
+     * @param args Git command arguments (e.g., "status", "diff", "file.txt")
+     * @return Command output
+     * @throws Exception if command fails
+     */
+    private String executeGitCommand(String... args) throws Exception {
+        List<String> command = new ArrayList<>();
+        command.add("git");
+        for (String arg : args) {
+            if (arg != null && !arg.isEmpty()) {
+                command.add(arg);
+            }
+        }
+
+        ProcessBuilder pb = new ProcessBuilder(command);
         pb.redirectErrorStream(true);
         Process process = pb.start();
 

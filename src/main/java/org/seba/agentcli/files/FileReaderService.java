@@ -2,6 +2,7 @@ package org.seba.agentcli.files;
 
 import org.seba.agentcli.io.AnsiColors;
 import org.seba.agentcli.io.BoxDrawer;
+import org.seba.agentcli.security.PathValidator;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,6 +20,12 @@ import java.util.stream.Collectors;
 @Service
 public class FileReaderService {
 
+    private final PathValidator pathValidator;
+
+    public FileReaderService(PathValidator pathValidator) {
+        this.pathValidator = pathValidator;
+    }
+
     private static final int MAX_LINE_LENGTH = 120;
     private static final String LINE_NUMBER_FORMAT = "%6d→";
 
@@ -26,6 +33,12 @@ public class FileReaderService {
      * Lit un fichier complet avec numérotation de lignes
      */
     public FileContent readFile(String filePath) throws IOException {
+        // Security: Validate path before accessing
+        PathValidator.ValidationResult validation = pathValidator.validatePath(filePath);
+        if (!validation.isValid()) {
+            throw new SecurityException(validation.getErrorMessage());
+        }
+
         Path path = Paths.get(filePath).toAbsolutePath().normalize();
 
         if (!Files.exists(path)) {

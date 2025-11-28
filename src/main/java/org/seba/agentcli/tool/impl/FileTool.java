@@ -39,6 +39,12 @@ public class FileTool extends AbstractTool {
 
         try {
             Path filePath = Paths.get(args);
+
+            // Security: Prevent path traversal attacks
+            if (!isPathSafe(filePath)) {
+                return formatError("Accès refusé: le fichier doit être dans le répertoire du projet");
+            }
+
             if (!Files.exists(filePath)) {
                 return formatError("Fichier introuvable: " + args);
             }
@@ -62,6 +68,35 @@ public class FileTool extends AbstractTool {
 
         } catch (Exception e) {
             return formatError("Erreur lors de la lecture: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Validates that a file path is within the project directory
+     * to prevent path traversal attacks.
+     *
+     * @param filePath The file path to validate
+     * @return true if the path is safe, false otherwise
+     */
+    private boolean isPathSafe(Path filePath) {
+        try {
+            Path projectRoot = Paths.get(".").toAbsolutePath().normalize();
+            Path normalizedFile = filePath.toAbsolutePath().normalize();
+
+            // File must be within project directory
+            if (!normalizedFile.startsWith(projectRoot)) {
+                return false;
+            }
+
+            // Deny access to .git directory and other sensitive files
+            String pathString = normalizedFile.toString();
+            if (pathString.contains("/.git/") || pathString.endsWith("/.git")) {
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }

@@ -1,0 +1,22 @@
+---
+projectName: "."
+projectType: "JAVA_MAVEN"
+ignorePaths:
+- ".git"
+- ".svn"
+- "node_modules"
+- "target"
+- "build"
+- "dist"
+- "out"
+- ".idea"
+- ".vscode"
+- "__pycache__"
+- "*.class"
+- "*.pyc"
+- "*.o"
+- "*.so"
+includePaths: []
+customCommands: {}
+toolSettings: {}
+maxFileSize: 1000000
